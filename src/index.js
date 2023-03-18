@@ -13,6 +13,7 @@ app.get('/api/ping', (request, response) => {
 //Endpoints Vehicles
 app.get('/api/vehicles', (request, response) => {
   const { id } = request.query;
+  const { type } = request.query;
 
   const vehicles = [
     {
@@ -33,10 +34,26 @@ app.get('/api/vehicles', (request, response) => {
       owner: 'Elias Colturato',
       type: 'car',
     },
+    {
+      id: 4,
+      name: 'CG Preta',
+      owner: 'Guilherme',
+      type: 'motorbike',
+    },
+    {
+      id: 5,
+      name: 'Bis prata',
+      owner: 'Vitória',
+      type: 'motorbike',
+    },
   ];
   //filtra o id passado como query e retorna todos/o carro com o id
   if (id) {
     response.send(vehicles.filter(vehicle => vehicle.id == id));
+    return;
+  }
+  if (type) {
+    response.send(vehicles.filter(vehicle => vehicle.type == type));
     return;
   }
 
