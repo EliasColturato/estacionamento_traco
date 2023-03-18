@@ -12,8 +12,7 @@ app.get('/api/ping', (request, response) => {
 
 //Endpoints Vehicles
 app.get('/api/vehicles', (request, response) => {
-  const { id } = request.query;
-  const { type } = request.query;
+  const { id, type } = request.query;
 
   const vehicles = [
     {
