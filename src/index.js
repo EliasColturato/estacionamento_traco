@@ -1,4 +1,5 @@
 import express, { application } from 'express';
+import { openDatabase } from './database.js';
 
 const app = express();
 
@@ -11,53 +12,28 @@ app.get('/api/ping', (request, response) => {
 });
 
 //Endpoints Vehicles
-app.get('/api/vehicles', (request, response) => {
-  const { id, type } = request.query;
-
-  const vehicles = [
-    {
-      id: 1,
-      name: 'Onix 1.4',
-      owner: 'Marcus Vinicius',
-      type: 'car',
-    },
-    {
-      id: 2,
-      name: 'Cobalt Cinza',
-      owner: 'Maria Eduarda',
-      type: 'car',
-    },
-    {
-      id: 3,
-      name: 'Mobi Preto',
-      owner: 'Elias Colturato',
-      type: 'car',
-    },
-    {
-      id: 4,
-      name: 'CG Preta',
-      owner: 'Guilherme',
-      type: 'motorbike',
-    },
-    {
-      id: 5,
-      name: 'Bis prata',
-      owner: 'Vitória',
-      type: 'motorbike',
-    },
-  ];
-  //filtra o id passado como query e retorna todos/o carro com o id
-  if (id) {
-    response.send(vehicles.filter(vehicle => vehicle.id == id));
-    return;
-  }
-  if (type) {
-    response.send(vehicles.filter(vehicle => vehicle.type == type));
-    return;
-  }
-
+app.get('/api/vehicles', async (request, response) => {
+  // o await só pode ser utilizado aqui adicionando o "async" após o nosso link da api, na nossa "função pai"
+  const db = await openDatabase();
+  const vehicles = await db.all(`
+    SELECT * FROM vehicles
+  `);
+  db.close();
   response.send(vehicles);
 });
+
+app.post('/api/vehicles', async (request, response) => {
+  const db = await openDatabase();
+  const vehicles = await db.run(`
+    INSET INTO vehicles
+  `);
+  db.close();
+  response.send(vehicles);
+});
+
+app.put('/api/vehicles/:id', (request, response) => {});
+
+app.delete('/api/vehicles/:id', (request, response) => {});
 
 app.listen(8000, () => {
   console.log('Servidor rodando na porta 8000');
